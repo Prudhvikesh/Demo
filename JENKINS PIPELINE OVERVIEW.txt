@@ -1,0 +1,140 @@
+Jenkins Pipelines Overview
+
+A Jenkins Pipeline is a suite of plugins that supports implementing and integrating continuous delivery (CD) pipelines. It enables the automation of software build, test, and deployment processes.
+
+ Pipelines are defined using Jenkinsfile, a text file that contains the definition of the pipeline in Groovy DSL.
+
+🚀 Key Concepts
+
+Declarative vs. Scripted Pipeline:
+
+Declarative Pipeline: Easier syntax, recommended for most users.
+
+Scripted Pipeline: More flexible, based on Groovy scripting, suitable for complex scenarios.
+
+Stages & Steps:
+
+Stages: Logical divisions (e.g., Build, Test, Deploy).
+
+Steps: Individual tasks (e.g., sh 'make build', checkout scm).
+
+Agents:
+
+Specify where the pipeline runs (e.g., a specific Jenkins agent or docker container).
+
+Post Actions:
+
+Actions that happen after the pipeline (e.g., always, success, failure).
+
+⚙ How to Set Up a Jenkins Pipeline
+
+✅ 1. Install Jenkins & Required Plugins
+Install Jenkins on your server.
+
+Go to Manage Jenkins → Manage Plugins.
+
+Install:
+
+Pipeline
+
+Git (if using Git)
+
+Maven (if needed)
+
+Nexus
+
+sonarqube scanner
+
+deploy to container
+
+
+✅ 2. Create a New Pipeline Job
+Go to Jenkins Dashboard.
+
+Click “New Item”.
+
+Enter the project name.
+
+Select “Pipeline” and click OK.
+
+✅ 3. Define Your Pipeline
+Option 1: Pipeline Script (Inline)
+
+Go to Pipeline section → choose “Pipeline Script”.
+
+Example:
+
+groovy
+Copy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'make build'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running Tests...'
+                sh 'make test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying Application...'
+                sh 'make deploy'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
+Option 2: Use Jenkinsfile from SCM (GitHub, GitLab)
+
+In the pipeline job settings, choose “Pipeline script from SCM”.
+
+Set repository details and specify the path to the Jenkinsfile.
+
+✅ 4. Save & Run the Pipeline
+Click Save and Build Now.
+
+Monitor the progress under the Build History.
+
+🔑 Advanced Pipeline Features
+Parallel Stages: Run multiple stages concurrently.
+
+groovy
+Copy
+stage('Parallel') {
+    parallel {
+        stage('Test 1') {
+            steps { sh 'make test1' }
+        }
+        stage('Test 2') {
+            steps { sh 'make test2' }
+        }
+    }
+}
+Environment Variables: Use env block to define variables.
+
+groovy
+Copy
+environment {
+    APP_ENV = 'production'
+}
+Trigger Mechanisms: Schedule builds or trigger on SCM changes.
+
+🚩 Common Pipeline Issues & Debugging
+Permission Issues: Ensure Jenkins has proper access rights.
+
+Pipeline Fails Silently: Add echo statements for better logging.
+
+Timeout Errors: Adjust timeout settings for long-running tasks.
